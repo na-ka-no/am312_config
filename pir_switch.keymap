@@ -1,0 +1,35 @@
+/*
+ * キーマップ（キーに何を割り当てるかを書くファイル）
+ *
+ * センサーが反応した瞬間に1回だけ、次の順で送る:
+ *   1. 再生/一時停止（ブラウザで再生中のYouTubeが止まる）
+ *   2. Win + Ctrl + →（右隣の仮想デスクトップへ切り替え）
+ *
+ * センサーの出力が2秒以上HIGHのままでも、マクロは押した瞬間に1回動くだけなので連打にはならない。
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    macros {
+        boss_mode: boss_mode {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <30>;   /* 各操作の間の待ち時間（ミリ秒） */
+            tap-ms = <30>;    /* 1回のキーを押している時間（ミリ秒） */
+            bindings
+                = <&macro_tap &kp C_PP>
+                , <&macro_tap &kp LG(LC(RIGHT))>
+                ;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <&boss_mode>;
+        };
+    };
+};

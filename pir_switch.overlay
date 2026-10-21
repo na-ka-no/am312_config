@@ -1,0 +1,30 @@
+/*
+ * ハードウェア定義（デバイスツリー = 「どのピンに何がつながっているか」を書くファイル）
+ *
+ * 配線:
+ *   AM312 VCC -> XIAO BLE 3V3
+ *   AM312 GND -> XIAO BLE GND
+ *   AM312 OUT -> XIAO BLE D0
+ */
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+    };
+
+    kscan0: kscan {
+        /* キーマトリクスを使わず、1ピン = 1キーとして読む方式 */
+        compatible = "zmk,kscan-gpio-direct";
+
+        /* 省電力スリープ中でも、このピンの変化で起きるようにする */
+        wakeup-source;
+
+        /*
+         * GPIO_ACTIVE_HIGH: 電圧がHIGHのときを「押された」と判定する
+         * 内蔵プルダウン（GPIO_PULL_DOWN）はあえて付けない。
+         * AM312の出力に約20kΩの抵抗があるという情報が正しければ、
+         * 内蔵抵抗（約13kΩ）と分圧されてHIGHが約1.3Vまで下がり、読めなくなるため。
+         */
+        input-gpios = <&xiao_d 0 GPIO_ACTIVE_HIGH>;
+    };
+};

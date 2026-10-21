@@ -1,0 +1,6 @@
+if SHIELD_PIR_SWITCH
+
+config ZMK_KEYBOARD_NAME
+    default "PIR Switch"
+
+endif

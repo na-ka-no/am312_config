@@ -1,0 +1,6 @@
+# GitHub Actionsでファームウェアをビルドするときの対象指定。
+# ボード名は使っているZMKのバージョンで異なる（旧: seeeduino_xiao_ble / 新: xiao_ble//zmk）。
+# 普段のキーボード用リポジトリで使っている名前に合わせること。
+include:
+  - board: seeeduino_xiao_ble
+    shield: pir_switch
