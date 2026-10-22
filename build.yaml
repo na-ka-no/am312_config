@@ -1,7 +1,7 @@
 # GitHub Actionsでファームウェアをビルドするときの対象指定。
-# ZMK v0.3.0 に固定しているため、ボード名は旧形式（seeeduino_xiao_ble）を使う。
-# mainなど新しいZMKに上げる場合は xiao_ble//zmk に変更すること。
+# ZMK main（Zephyr 4.x 世代）を使っているため、ボード名は新形式（xiao_ble//zmk）を使う。
+# v0.3.0 など旧世代のZMKに戻す場合は seeeduino_xiao_ble に変更すること。
 
 include:
-  - board: seeeduino_xiao_ble
+  - board: xiao_ble//zmk
     shield: pir_switch
