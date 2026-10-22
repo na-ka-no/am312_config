@@ -1,7 +1,7 @@
 # GitHub Actionsでファームウェアをビルドするときの対象指定。
-# ボード名は使っているZMKのバージョンで異なる（旧: seeeduino_xiao_ble / 新: xiao_ble//zmk）。
-# 普段のキーボード用リポジトリで使っている名前に合わせること。
+# ZMK v0.3.0 に固定しているため、ボード名は旧形式（seeeduino_xiao_ble）を使う。
+# mainなど新しいZMKに上げる場合は xiao_ble//zmk に変更すること。
 
 include:
-  - board: xiao_ble//zmk
+  - board: seeeduino_xiao_ble
     shield: pir_switch
