@@ -28,3 +28,25 @@
         input-gpios = <&xiao_d 0 GPIO_ACTIVE_HIGH>;
     };
 };
+
+/*
+ * 設定データ用の領域（4KB）
+ * アプリ領域の末尾を削って確保する。設定サイトで作った .uf2 はこの領域だけを書き換える。
+ * アドレスを変えた場合は docs/index.html の CONFIG_ADDR も合わせること。
+ *
+ *   0x00027000 アプリ（0xC4000 = 784KB、元は 788KB）
+ *   0x000EB000 設定データ（4KB）
+ *   0x000EC000 storage（ZMKの設定・ペアリング情報、変更なし）
+ */
+&code_partition {
+    reg = <0x00027000 0x000C4000>;
+};
+
+&flash0 {
+    partitions {
+        pir_config_partition: partition@eb000 {
+            label = "pir_config";
+            reg = <0x000EB000 0x00001000>;
+        };
+    };
+};

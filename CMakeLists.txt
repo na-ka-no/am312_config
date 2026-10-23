@@ -1,0 +1,1 @@
+target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_PIR_CONFIG_MACRO app PRIVATE src/behavior_pir_config_macro.c)

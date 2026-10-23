@@ -1,7 +1,8 @@
 /*
  * キーマップ（キーに何を割り当てるかを書くファイル）
  *
- * センサーが反応した瞬間に1回だけ、次の順で送る:
+ * センサーが反応した瞬間に1回だけ、設定サイト（docs/index.html）で決めた手順でキーを送る。
+ * 設定をまだ書き込んでいないときは、次の順で送る:
  *   1. 再生/一時停止（ブラウザで再生中のYouTubeが止まる）
  *   2. Win + Ctrl + →（右隣の仮想デスクトップへ切り替え）
  *
@@ -12,16 +13,15 @@
 #include <dt-bindings/zmk/keys.h>
 
 / {
-    macros {
+    behaviors {
         boss_mode: boss_mode {
-            compatible = "zmk,behavior-macro";
+            compatible = "zmk,behavior-pir-config-macro";
             #binding-cells = <0>;
-            wait-ms = <30>;   /* 各操作の間の待ち時間（ミリ秒） */
+            key-press = <&kp>;
+            config-partition = <&pir_config_partition>;
             tap-ms = <30>;    /* 1回のキーを押している時間（ミリ秒） */
-            bindings
-                = <&macro_tap &kp C_PP>
-                , <&macro_tap &kp LG(LC(RIGHT))>
-                ;
+            wait-ms = <30>;   /* 各操作の間の待ち時間（ミリ秒） */
+            default-keys = <C_PP LG(LC(RIGHT))>;
         };
     };
 
