@@ -34,19 +34,24 @@
  * アプリ領域の末尾を削って確保する。設定サイトで作った .uf2 はこの領域だけを書き換える。
  * アドレスを変えた場合は docs/index.html の CONFIG_ADDR も合わせること。
  *
- *   0x00027000 アプリ（0xC4000 = 784KB、元は 788KB）
- *   0x000EB000 設定データ（4KB）
+ * XIAO のブートローダー（Adafruit nRF52 Bootloader）は 0xEA000 以上への書き込みを
+ * 受け付けない（ブートローダー手前の 40KB はアプリのデータ用として保護されている）。
+ * そのため設定データは 0xEA000 より手前に置く必要がある。
+ *
+ *   0x00027000 アプリ（0xC2000 = 776KB、元は 788KB）
+ *   0x000E9000 設定データ（4KB）
+ *   0x000EA000 未使用（8KB）
  *   0x000EC000 storage（ZMKの設定・ペアリング情報、変更なし）
  */
 &code_partition {
-    reg = <0x00027000 0x000C4000>;
+    reg = <0x00027000 0x000C2000>;
 };
 
 &flash0 {
     partitions {
-        pir_config_partition: partition@eb000 {
+        pir_config_partition: partition@e9000 {
             label = "pir_config";
-            reg = <0x000EB000 0x00001000>;
+            reg = <0x000E9000 0x00001000>;
         };
     };
 };
