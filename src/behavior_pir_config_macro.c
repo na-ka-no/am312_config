@@ -5,6 +5,9 @@
  * 設定領域は設定サイト（docs/index.html）で作った .uf2 で書き込む。
  * 設定領域が空・壊れている場合は devicetree の default-keys を使う。
  *
+ * status-led を指定した場合は、センサーが反応してから次に反応できるようになるまで LED を点ける。
+ * センサー出力が LOW に戻ってから status-led-hold-ms 後に消す（AM312 のブロック時間の目安）。
+ *
  * 設定データの形式（リトルエンディアン、80バイト）:
  *   0  magic    "PIRC"
  *   4  version  1
@@ -19,6 +22,7 @@
 #define DT_DRV_COMPAT zmk_behavior_pir_config_macro
 
 #include <zephyr/device.h>
+#include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/storage/flash_map.h>
 #include <zephyr/sys/crc.h>
@@ -58,7 +62,40 @@ struct behavior_pir_config_macro_config {
     uint16_t default_wait_ms;
     size_t default_count;
     const uint32_t *default_steps;
+    struct gpio_dt_spec status_led; /* 指定がなければ port が NULL */
+    uint32_t status_led_hold_ms;
 };
+
+struct behavior_pir_config_macro_data {
+    const struct device *dev;
+    struct k_work_delayable led_off_work;
+};
+
+static void led_off_work_handler(struct k_work *work) {
+    struct k_work_delayable *dwork = k_work_delayable_from_work(work);
+    struct behavior_pir_config_macro_data *data =
+        CONTAINER_OF(dwork, struct behavior_pir_config_macro_data, led_off_work);
+    const struct behavior_pir_config_macro_config *cfg = data->dev->config;
+
+    gpio_pin_set_dt(&cfg->status_led, 0);
+}
+
+static int behavior_pir_config_macro_init(const struct device *dev) {
+    const struct behavior_pir_config_macro_config *cfg = dev->config;
+    struct behavior_pir_config_macro_data *data = dev->data;
+
+    data->dev = dev;
+    k_work_init_delayable(&data->led_off_work, led_off_work_handler);
+
+    if (cfg->status_led.port == NULL) {
+        return 0;
+    }
+    if (!gpio_is_ready_dt(&cfg->status_led)) {
+        LOG_ERR("LED の GPIO が使えない");
+        return -ENODEV;
+    }
+    return gpio_pin_configure_dt(&cfg->status_led, GPIO_OUTPUT_INACTIVE);
+}
 
 static bool load_config(const struct behavior_pir_config_macro_config *cfg,
                         struct pir_config_data *data) {
@@ -84,8 +121,14 @@ static int on_pir_config_macro_binding_pressed(struct zmk_behavior_binding *bind
                                                struct zmk_behavior_binding_event event) {
     const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_pir_config_macro_config *cfg = dev->config;
+    struct behavior_pir_config_macro_data *dev_data = dev->data;
     struct pir_config_data data;
     const uint32_t *steps;
+
+    if (cfg->status_led.port != NULL) {
+        k_work_cancel_delayable(&dev_data->led_off_work);
+        gpio_pin_set_dt(&cfg->status_led, 1);
+    }
     size_t count;
     uint32_t tap_ms, wait_ms;
 
@@ -126,6 +169,14 @@ static int on_pir_config_macro_binding_pressed(struct zmk_behavior_binding *bind
 
 static int on_pir_config_macro_binding_released(struct zmk_behavior_binding *binding,
                                                 struct zmk_behavior_binding_event event) {
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+    const struct behavior_pir_config_macro_config *cfg = dev->config;
+    struct behavior_pir_config_macro_data *data = dev->data;
+
+    /* センサー出力が LOW に戻った。ブロック時間が終わるころに LED を消す */
+    if (cfg->status_led.port != NULL) {
+        k_work_reschedule(&data->led_off_work, K_MSEC(cfg->status_led_hold_ms));
+    }
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
@@ -143,8 +194,14 @@ static const struct behavior_driver_api behavior_pir_config_macro_driver_api = {
         .default_wait_ms = DT_INST_PROP(n, wait_ms),                                               \
         .default_count = DT_INST_PROP_LEN(n, default_keys),                                        \
         .default_steps = pir_config_macro_default_steps_##n,                                       \
+        .status_led = COND_CODE_1(DT_INST_NODE_HAS_PROP(n, status_led),                            \
+                                  (GPIO_DT_SPEC_GET(DT_INST_PHANDLE(n, status_led), gpios)),       \
+                                  ({0})),                                                          \
+        .status_led_hold_ms = DT_INST_PROP(n, status_led_hold_ms),                                 \
     };                                                                                             \
-    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, NULL, &pir_config_macro_config_##n, POST_KERNEL,        \
+    static struct behavior_pir_config_macro_data pir_config_macro_data_##n;                        \
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_pir_config_macro_init, NULL, &pir_config_macro_data_##n,   \
+                            &pir_config_macro_config_##n, POST_KERNEL,                             \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                   \
                             &behavior_pir_config_macro_driver_api);
 

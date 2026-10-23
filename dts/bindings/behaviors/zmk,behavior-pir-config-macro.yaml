@@ -26,3 +26,10 @@ properties:
   wait-ms:
     type: int
     default: 30
+  status-led:
+    type: phandle
+    description: 反応してから次に反応できるようになるまで点ける LED（gpio-leds の子ノード）
+  status-led-hold-ms:
+    type: int
+    default: 2000
+    description: センサー出力が LOW に戻ってから LED を消すまでの時間（ミリ秒）
