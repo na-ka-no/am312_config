@@ -21,6 +21,10 @@ properties:
     type: phandles
     required: true
     description: モード1・モード2の LED（gpio-leds の子ノード）
+  red-led:
+    type: phandle
+    required: true
+    description: 起動時の電池残量表示に使う赤の LED（gpio-leds の子ノード）
   mode1-default-keys:
     type: array
     required: true

@@ -3,7 +3,12 @@
  *
  * &pir <コマンド> でキーマップから呼ぶ（コマンドは dt-bindings/zmk/pir_switch.h）。
  *
- * LED は mode-leds の2つ（XIAO 基板上のLEDの緑・青）。モード1 = 緑、モード2 = 青。
+ * LED は mode-leds の2つ（XIAO 基板上のLEDの緑・青）と red-led（同じLEDの赤）。
+ * モード1 = 緑、モード2 = 青。
+ *
+ * 電源を入れた直後は、電池残量を LED の色で2秒間表示する。
+ *   50% 以上: 緑 / 20〜49%: 黄（赤＋緑）/ 20% 未満: 赤
+ *   電池がつながっていない（USB だけで動いている）ときは表示しない。
  *
  *   PIR_TRIGGER    センサー: 今のモードのキーを送り、次に反応できるまでモードの色で LED を点ける
  *   PIR_TEST       動作確認: 今のモードのキーを送り、モードの色で1回点滅
@@ -36,6 +41,7 @@
 
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/sensor.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/settings/settings.h>
 #include <zephyr/storage/flash_map.h>
@@ -92,9 +98,16 @@ static const char *const key_press_dev = DEVICE_DT_NAME(DT_PHANDLE(PIR_NODE, key
 static const uint8_t config_partition_id =
     DT_FIXED_PARTITION_ID(DT_PHANDLE(PIR_NODE, config_partition));
 
-static const struct gpio_dt_spec mode_leds[MODE_COUNT] = {
+/* ビット0 = 緑（モード1）, ビット1 = 青（モード2）, ビット2 = 赤 */
+#define LED_GREEN BIT(0)
+#define LED_BLUE BIT(1)
+#define LED_RED BIT(2)
+#define LED_COUNT 3
+
+static const struct gpio_dt_spec leds[LED_COUNT] = {
     GPIO_DT_SPEC_GET(DT_PHANDLE_BY_IDX(PIR_NODE, mode_leds, 0), gpios),
     GPIO_DT_SPEC_GET(DT_PHANDLE_BY_IDX(PIR_NODE, mode_leds, 1), gpios),
+    GPIO_DT_SPEC_GET(DT_PHANDLE(PIR_NODE, red_led), gpios),
 };
 
 static const uint32_t mode1_default_steps[] = DT_PROP(PIR_NODE, mode1_default_keys);
@@ -117,16 +130,18 @@ static bool indicator_on;       /* センサー反応〜次に反応できるま
 static struct k_work_delayable indicator_off_work;
 static struct k_work_delayable blink_work;
 static int blink_remaining; /* 残りの点灯・消灯の切り替え回数 */
-static uint8_t blink_mask;  /* 点滅させる LED（ビット0 = モード1, ビット1 = モード2） */
+static uint8_t blink_mask;  /* 点滅させる LED（LED_GREEN などの組み合わせ） */
 static uint32_t blink_on_ms;
 static uint32_t blink_off_ms;
 
+static struct k_work_delayable battery_show_work;
+
 /* ---------- LED ---------- */
 
-/* mask のビット i が立っている LED（モード i の色）を点ける */
+/* mask のビットが立っている LED を点ける。モード i の色は BIT(i) */
 static void set_leds(uint8_t mask) {
-    for (int i = 0; i < MODE_COUNT; i++) {
-        gpio_pin_set_dt(&mode_leds[i], (mask & BIT(i)) ? 1 : 0);
+    for (int i = 0; i < LED_COUNT; i++) {
+        gpio_pin_set_dt(&leds[i], (mask & BIT(i)) ? 1 : 0);
     }
 }
 
@@ -162,6 +177,41 @@ static void start_blink(uint8_t mask, int times, uint32_t on_ms, uint32_t off_ms
 static void indicator_off_work_handler(struct k_work *work) {
     indicator_on = false;
     update_leds();
+}
+
+/* ---------- 起動時の電池残量表示 ---------- */
+
+/* これより低い電圧は「電池がつながっていない」とみなす（昇圧モジュールは約1.0Vで止まる） */
+#define BATTERY_PRESENT_MIN_MV 900
+
+static void battery_show_work_handler(struct k_work *work) {
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING) && DT_HAS_CHOSEN(zmk_battery)
+    const struct device *battery = DEVICE_DT_GET(DT_CHOSEN(zmk_battery));
+    struct sensor_value voltage, soc;
+
+    /* ZMK が起動直後に測った値を読む（ここでは測り直さない） */
+    if (!device_is_ready(battery) ||
+        sensor_channel_get(battery, SENSOR_CHAN_GAUGE_VOLTAGE, &voltage) != 0 ||
+        sensor_channel_get(battery, SENSOR_CHAN_GAUGE_STATE_OF_CHARGE, &soc) != 0) {
+        return;
+    }
+
+    int mv = voltage.val1 * 1000 + voltage.val2 / 1000;
+    if (mv < BATTERY_PRESENT_MIN_MV) {
+        LOG_INF("電池なし（%d mV）のため残量表示をしない", mv);
+        return;
+    }
+
+    uint8_t mask;
+    if (soc.val1 >= 50) {
+        mask = LED_GREEN;
+    } else if (soc.val1 >= 20) {
+        mask = LED_GREEN | LED_RED;
+    } else {
+        mask = LED_RED;
+    }
+    start_blink(mask, 1, 2000, 0);
+#endif
 }
 
 /* ---------- モード・LED 設定の保存 ---------- */
@@ -295,7 +345,7 @@ static int on_pir_binding_pressed(struct zmk_behavior_binding *binding,
 #if IS_ENABLED(CONFIG_ZMK_BLE)
         zmk_ble_clear_all_bonds();
 #endif
-        start_blink(BIT(0) | BIT(1), 5, 100, 100);
+        start_blink(LED_GREEN | LED_BLUE, 5, 100, 100);
         break;
 
     default:
@@ -319,16 +369,20 @@ static int behavior_pir_init(const struct device *dev) {
     k_work_init_delayable(&indicator_off_work, indicator_off_work_handler);
     k_work_init_delayable(&blink_work, blink_work_handler);
 
-    for (int i = 0; i < MODE_COUNT; i++) {
-        if (!gpio_is_ready_dt(&mode_leds[i])) {
+    for (int i = 0; i < LED_COUNT; i++) {
+        if (!gpio_is_ready_dt(&leds[i])) {
             LOG_ERR("LED の GPIO が使えない");
             return -ENODEV;
         }
-        int err = gpio_pin_configure_dt(&mode_leds[i], GPIO_OUTPUT_INACTIVE);
+        int err = gpio_pin_configure_dt(&leds[i], GPIO_OUTPUT_INACTIVE);
         if (err != 0) {
             return err;
         }
     }
+
+    /* ZMK は起動直後に電池を測るので、その結果が出たころに残量を表示する */
+    k_work_init_delayable(&battery_show_work, battery_show_work_handler);
+    k_work_schedule(&battery_show_work, K_MSEC(1000));
     return 0;
 }
 
