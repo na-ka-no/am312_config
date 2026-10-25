@@ -17,10 +17,16 @@ properties:
     type: phandle
     required: true
     description: 設定データを置くフラッシュのパーティション
-  mode-leds:
-    type: phandles
+  led-strip:
+    type: phandle
     required: true
-    description: モード1・モード2の LED（gpio-leds の子ノード）
+    description: |
+      モード表示用のフルカラーLED（led-strip、2個つなぎ）。
+      0 番目をモード1（スイッチA・緑）、1 番目をモード2（スイッチB・青）に使う。
+  led-brightness:
+    type: int
+    default: 128
+    description: LED の明るさ（1〜255）
   mode1-default-keys:
     type: array
     required: true

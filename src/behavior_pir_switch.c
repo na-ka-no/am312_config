@@ -2,11 +2,15 @@
  * PIR Switch 本体の動作
  *
  * &pir <コマンド> でキーマップから呼ぶ（コマンドは dt-bindings/zmk/pir_switch.h）。
- *   PIR_TRIGGER    センサー: 今のモードのキーを送り、次に反応できるまで LED を点ける
- *   PIR_TEST       動作確認: 今のモードのキーを送り、モードの色で1回点滅
- *   PIR_MODE_1/2   モードを切り替え、新しいモードの色で3回点滅
+ *
+ * LED はスイッチの下のフルカラーLED（led-strip）2個。
+ * 0 番目 = スイッチAの下（モード1・緑）、1 番目 = スイッチBの下（モード2・青）。
+ *
+ *   PIR_TRIGGER    センサー: 今のモードのキーを送り、次に反応できるまで今のモードの LED を点ける
+ *   PIR_TEST       動作確認: 今のモードのキーを送り、今のモードの LED が1回点滅
+ *   PIR_MODE_1/2   モードを切り替え、新しいモードの LED が3回点滅
  *   PIR_LED_TOGGLE センサー反応時の LED 表示を ON/OFF（ON: 2回点滅 / OFF: 1回長く点灯）
- *   PIR_BT_CLEAR   ペアリング情報をすべて消し、両方の LED で5回点滅
+ *   PIR_BT_CLEAR   ペアリング情報をすべて消し、両方の LED が5回点滅
  *
  * モードと LED の ON/OFF は settings に保存し、電源を入れ直しても保つ。
  * ボタン操作の点滅は、LED 表示が OFF でも行う（操作が効いたかわかるように）。
@@ -32,7 +36,7 @@
 #define DT_DRV_COMPAT zmk_behavior_pir_switch
 
 #include <zephyr/device.h>
-#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/led_strip.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/settings/settings.h>
 #include <zephyr/storage/flash_map.h>
@@ -52,7 +56,10 @@ BUILD_ASSERT(DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT) == 1, "&pir は1つだけ定
 #define PIR_NODE DT_DRV_INST(0)
 #define MODE_COUNT 2
 
-BUILD_ASSERT(DT_PROP_LEN(PIR_NODE, mode_leds) == MODE_COUNT, "mode-leds は2つ指定すること");
+#define LED_STRIP_NODE DT_PHANDLE(PIR_NODE, led_strip)
+
+BUILD_ASSERT(DT_PROP(LED_STRIP_NODE, chain_length) >= MODE_COUNT,
+             "led-strip の chain-length は2以上にすること");
 
 #define PIR_CONFIG_MAGIC 0x43524950 /* "PIRC" */
 #define PIR_CONFIG_VERSION 2
@@ -89,9 +96,14 @@ static const char *const key_press_dev = DEVICE_DT_NAME(DT_PHANDLE(PIR_NODE, key
 static const uint8_t config_partition_id =
     DT_FIXED_PARTITION_ID(DT_PHANDLE(PIR_NODE, config_partition));
 
-static const struct gpio_dt_spec mode_leds[MODE_COUNT] = {
-    GPIO_DT_SPEC_GET(DT_PHANDLE_BY_IDX(PIR_NODE, mode_leds, 0), gpios),
-    GPIO_DT_SPEC_GET(DT_PHANDLE_BY_IDX(PIR_NODE, mode_leds, 1), gpios),
+static const struct device *const led_strip = DEVICE_DT_GET(LED_STRIP_NODE);
+
+#define LED_BRIGHTNESS DT_PROP(PIR_NODE, led_brightness)
+
+/* モードごとの LED の色（モード1 = 緑, モード2 = 青） */
+static const struct led_rgb mode_colors[MODE_COUNT] = {
+    {.r = 0, .g = LED_BRIGHTNESS, .b = 0},
+    {.r = 0, .g = 0, .b = LED_BRIGHTNESS},
 };
 
 static const uint32_t mode1_default_steps[] = DT_PROP(PIR_NODE, mode1_default_keys);
@@ -120,10 +132,19 @@ static uint32_t blink_off_ms;
 
 /* ---------- LED ---------- */
 
+/* mask のビット i が立っている LED を、モード i の色で点ける */
 static void set_leds(uint8_t mask) {
-    for (int i = 0; i < MODE_COUNT; i++) {
-        gpio_pin_set_dt(&mode_leds[i], (mask & BIT(i)) ? 1 : 0);
+    struct led_rgb pixels[DT_PROP(LED_STRIP_NODE, chain_length)] = {0};
+
+    if (!device_is_ready(led_strip)) {
+        return;
     }
+    for (int i = 0; i < MODE_COUNT; i++) {
+        if (mask & BIT(i)) {
+            pixels[i] = mode_colors[i];
+        }
+    }
+    led_strip_update_rgb(led_strip, pixels, ARRAY_SIZE(pixels));
 }
 
 /* 点滅中でなければ、センサー反応の表示状態に合わせる */
@@ -315,16 +336,11 @@ static int behavior_pir_init(const struct device *dev) {
     k_work_init_delayable(&indicator_off_work, indicator_off_work_handler);
     k_work_init_delayable(&blink_work, blink_work_handler);
 
-    for (int i = 0; i < MODE_COUNT; i++) {
-        if (!gpio_is_ready_dt(&mode_leds[i])) {
-            LOG_ERR("LED の GPIO が使えない");
-            return -ENODEV;
-        }
-        int err = gpio_pin_configure_dt(&mode_leds[i], GPIO_OUTPUT_INACTIVE);
-        if (err != 0) {
-            return err;
-        }
-    }
+    /*
+     * LED は電源投入直後に不定の色で光ることがあるので、起動後に一度消す。
+     * LED のドライバはこの behavior より後に初期化されるため、少し待ってから行う。
+     */
+    k_work_schedule(&blink_work, K_MSEC(500));
     return 0;
 }
 

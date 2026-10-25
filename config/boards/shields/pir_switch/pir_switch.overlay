@@ -7,11 +7,11 @@
  *   AM312 OUT -> XIAO BLE D0
  *   スイッチA -> D1 と GND の間（モード1・緑）
  *   スイッチB -> D2 と GND の間（モード2・青）
- *   緑LED     -> D3 -> 抵抗 -> LEDのアノード(+)、カソード(-) -> GND
- *   青LED     -> D4 -> 抵抗 -> LEDのアノード(+)、カソード(-) -> GND
+ *   LED1（スイッチAの下、SK6812MINI-E）: VDD -> 3V3, GND -> GND, DIN -> D5
+ *   LED2（スイッチBの下、SK6812MINI-E）: VDD -> 3V3, GND -> GND, DIN -> LED1 の DOUT
  */
 
-#include <dt-bindings/gpio/nordic-nrf-gpio.h>
+#include <dt-bindings/led/led.h>
 
 / {
     chosen {
@@ -42,26 +42,47 @@
             ;
     };
 
-    /*
-     * 外付けLED。明るくするため高出力モード（H0H1）で駆動する。
-     * 高出力モードの指定は xiao_d 経由だと落ちるので、gpio0 を直接指定する（D3 = P0.29, D4 = P0.04）。
-     */
-    pir_leds {
-        compatible = "gpio-leds";
+};
 
-        pir_led_green: pir_led_green {
-            gpios = <&gpio0 29 (GPIO_ACTIVE_HIGH | NRF_GPIO_DRIVE_H0H1)>;
-        };
+/* D5 は標準では I2C に割り当てられているので、LED に使うため I2C を止める */
+&xiao_i2c {
+    status = "disabled";
+};
 
-        pir_led_blue: pir_led_blue {
-            gpios = <&gpio0 4 (GPIO_ACTIVE_HIGH | NRF_GPIO_DRIVE_H0H1)>;
-        };
+/*
+ * スイッチの下のフルカラーLED（SK6812MINI-E × 2、数珠つなぎ）
+ * SPI の MOSI 信号で WS2812 互換の信号を作る方式（ZMK の公式ドキュメントと同じ）。
+ * 使うのは MOSI（D5 = P0.05）だけ。XIAO の標準定義の SCK/MISO は割り当てない。
+ */
+&spi3_default {
+    group1 {
+        psels = <NRF_PSEL(SPIM_MOSI, 0, 5)>;
     };
 };
 
-/* D4 は標準では I2C に割り当てられているので、LED に使うため I2C を止める */
-&xiao_i2c {
-    status = "disabled";
+&spi3_sleep {
+    group1 {
+        psels = <NRF_PSEL(SPIM_MOSI, 0, 5)>;
+        low-power-enable;
+    };
+};
+
+&spi3 {
+    compatible = "nordic,nrf-spim";
+    status = "okay";
+    pinctrl-0 = <&spi3_default>;
+    pinctrl-1 = <&spi3_sleep>;
+    pinctrl-names = "default", "sleep";
+
+    pir_led_strip: ws2812@0 {
+        compatible = "worldsemi,ws2812-spi";
+        reg = <0>; /* SPI の決まりで必要（実際には使わない） */
+        spi-max-frequency = <4000000>;
+        chain-length = <2>; /* 0 = スイッチAの下, 1 = スイッチBの下 */
+        spi-one-frame = <0x70>;
+        spi-zero-frame = <0x40>;
+        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+    };
 };
 
 /*
