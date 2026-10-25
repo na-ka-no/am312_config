@@ -9,6 +9,8 @@
  *   スイッチB -> D2 と GND の間（モード2・青）
  *   LED1（スイッチAの下、SK6812MINI-E）: VDD -> 3V3, GND -> GND, DIN -> D5
  *   LED2（スイッチBの下、SK6812MINI-E）: VDD -> 3V3, GND -> GND, DIN -> LED1 の DOUT
+ *   昇圧モジュール（aaa-boost-module-v2）:
+ *     GND -> GND, 5V -> 5V, SNS -> D3, MCU -> BAT+（XIAO 裏面）, BAT -> 電源スイッチ -> 電池+
  */
 
 #include <dt-bindings/led/led.h>
@@ -16,6 +18,19 @@
 / {
     chosen {
         zmk,kscan = &kscan0;
+        zmk,battery = &nimh_battery;
+    };
+
+    /*
+     * 電池残量（エネループ1本）
+     * 昇圧モジュールの SNS 端子 = 電池電圧 × 470k / (1M + 470k) を D3（P0.29 = AIN5）で測る。
+     * XIAO 標準の vbatt は BAT+ の電圧（= 昇圧後の一定電圧）を測るため、残量の目安にならないので使わない。
+     */
+    nimh_battery: nimh_battery {
+        compatible = "zmk,battery-nimh-voltage-divider";
+        io-channels = <&adc 5>;
+        output-ohms = <470000>;
+        full-ohms = <(1000000 + 470000)>;
     };
 
     kscan0: kscan {
@@ -42,6 +57,10 @@
             ;
     };
 
+};
+
+&vbatt {
+    status = "disabled";
 };
 
 /* D5 は標準では I2C に割り当てられているので、LED に使うため I2C を止める */

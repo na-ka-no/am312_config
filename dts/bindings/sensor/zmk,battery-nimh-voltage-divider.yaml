@@ -1,0 +1,8 @@
+description: |
+  ニッケル水素電池（エネループなど）1本の電圧を分圧して測り、残量（%）を返すセンサー。
+  ZMK 標準の zmk,battery-voltage-divider と同じ配線で使えるが、残量の計算を
+  リチウムイオン用ではなくニッケル水素用の換算表で行う。
+
+compatible: "zmk,battery-nimh-voltage-divider"
+
+include: voltage-divider.yaml

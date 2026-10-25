@@ -11,10 +11,16 @@ AM312 人感センサー + XIAO BLE で、人が近づいたらキー操作を�
 | スイッチB（モード2） | 2本の足（向きなし） | XIAO D2 と GND |
 | LED1（スイッチAの下、SK6812MINI-E） | VDD / GND / DIN / DOUT | XIAO 3V3 / GND / D5 / LED2 の DIN |
 | LED2（スイッチBの下、SK6812MINI-E） | VDD / GND / DIN / DOUT | XIAO 3V3 / GND / LED1 の DOUT / なし |
+| 昇圧モジュール（aaa-boost-module-v2） | 1 GND | XIAO GND、電池− |
+| | 2 5V | XIAO 5V（USB 接続時の逆流防止に必須） |
+| | 3 SNS | XIAO D3（電池残量の測定） |
+| | 4 MCU | XIAO 裏面の BAT+ パッド |
+| | 5 BAT | 電源スイッチ → 電池+（エネループ単4 1本） |
 
 - 各 LED の VDD と GND の間に 0.1µF のコンデンサを入れると安定する。
 - SK6812MINI-E の推奨電圧は 3.7〜5.5V で、3.3V は範囲外（動作報告はあるが、やや暗くなる）。
-- D5 は標準では I2C 用だが、LED に使うため I2C は無効にしている。D3・D4 は空き。
+- D5 は標準では I2C 用だが、LED に使うため I2C は無効にしている。D4 は空き。
+- 電池残量はニッケル水素用の換算表（`src/battery_nimh.c`）で計算し、Bluetooth で PC に送る（Windows の「Bluetooth とデバイス」に表示される）。
 
 ## 本体の操作
 
@@ -44,6 +50,7 @@ LED はスイッチAの下が緑（モード1）、スイッチBの下が青（�
 |---|---|
 | `config/boards/shields/pir_switch/` | シールド定義（配線・キーマップ・設定領域） |
 | `src/behavior_pir_switch.c` | センサー・スイッチ・LED・設定領域を扱う ZMK の動作 |
+| `src/battery_nimh.c` | エネループ1本の電池残量を測るセンサー |
 | `include/dt-bindings/zmk/pir_switch.h` | キーマップで使うコマンド（`PIR_TRIGGER` など） |
 | `dts/bindings/`, `Kconfig`, `CMakeLists.txt`, `zephyr/module.yml` | 上の動作を ZMK に組み込むための定義 |
 | `docs/index.html` | 設定ファイル（.uf2）を作る Web ページ |
