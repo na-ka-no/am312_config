@@ -1,32 +1,63 @@
 /*
  * キーマップ（キーに何を割り当てるかを書くファイル）
  *
- * センサーが反応した瞬間に1回だけ、設定サイト（docs/index.html）で決めた手順でキーを送る。
- * 設定をまだ書き込んでいないときは、次の順で送る:
- *   1. 再生/一時停止（ブラウザで再生中のYouTubeが止まる）
- *   2. Win + Ctrl + →（右隣の仮想デスクトップへ切り替え）
+ * キー番号（overlay の input-gpios の順）:
+ *   0: センサー  1: スイッチA  2: スイッチB
  *
- * センサーの出力が2秒以上HIGHのままでも、マクロは押した瞬間に1回動くだけなので連打にはならない。
+ * 操作:
+ *   センサー反応         今のモードのキーを送る。次に反応できるまで、モードの色のLEDを点ける
+ *   スイッチA 単押し     動作確認（今のモードのキーを送り、モードの色で1回点滅）
+ *   スイッチA 3秒長押し  モード1（緑）にする
+ *   スイッチB 単押し     動作確認
+ *   スイッチB 3秒長押し  モード2（青）にする
+ *   両方 単押し          センサー反応時のLED表示を ON/OFF
+ *   両方 3秒長押し       Bluetooth のペアリング情報をすべて消す
  *
- * 緑のLEDは、センサーが反応してから次に反応できるようになるまで点く。
- * センサー出力が LOW に戻ってから2秒後（AM312 のブロック時間の目安）に消える。
+ * モードごとに送るキーは設定サイト（docs/index.html）で変えられる。
+ * 設定をまだ書き込んでいないときは mode1-default-keys / mode2-default-keys を送る。
+ *
+ * センサーの出力が2秒以上HIGHのままでも、押した瞬間に1回動くだけなので連打にはならない。
  */
 
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/pir_switch.h>
 
 / {
     behaviors {
-        boss_mode: boss_mode {
-            compatible = "zmk,behavior-pir-config-macro";
-            #binding-cells = <0>;
+        pir: pir_switch {
+            compatible = "zmk,behavior-pir-switch";
+            #binding-cells = <1>;
             key-press = <&kp>;
             config-partition = <&pir_config_partition>;
-            tap-ms = <30>;    /* 1回のキーを押している時間（ミリ秒） */
-            wait-ms = <30>;   /* 各操作の間の待ち時間（ミリ秒） */
-            default-keys = <C_PP LG(LC(RIGHT))>;
-            status-led = <&led1>;             /* 基板の緑LED */
-            status-led-hold-ms = <2000>;
+            mode-leds = <&pir_led_green &pir_led_blue>;
+            tap-ms = <30>;                /* 1回のキーを押している時間（ミリ秒） */
+            wait-ms = <30>;               /* 各操作の間の待ち時間（ミリ秒） */
+            indicator-hold-ms = <2000>;   /* センサー出力が LOW に戻ってから LED を消すまで（AM312 のブロック時間の目安） */
+            mode1-default-keys = <C_PP LG(LC(RIGHT))>;  /* 一時停止 → 右の仮想デスクトップへ */
+            mode2-default-keys = <C_PP>;                /* 一時停止だけ */
+        };
+
+        /*
+         * 単押し / 3秒長押しの判定。
+         * tap-preferred: 3秒たつまでは、ほかのキー（センサーなど）が反応しても長押し扱いにしない
+         */
+        pir_ht: pir_hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <3000>;
+            bindings = <&pir>, <&pir>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        both_switches {
+            timeout-ms = <200>;           /* この時間内に両方押されたら「両方押し」とみなす */
+            key-positions = <1 2>;
+            bindings = <&pir_ht PIR_BT_CLEAR PIR_LED_TOGGLE>;
         };
     };
 
@@ -34,7 +65,11 @@
         compatible = "zmk,keymap";
 
         default_layer {
-            bindings = <&boss_mode>;
+            bindings = <
+                &pir PIR_TRIGGER
+                &pir_ht PIR_MODE_1 PIR_TEST
+                &pir_ht PIR_MODE_2 PIR_TEST
+            >;
         };
     };
 };

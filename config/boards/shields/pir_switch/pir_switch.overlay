@@ -5,7 +5,13 @@
  *   AM312 VCC -> XIAO BLE 3V3
  *   AM312 GND -> XIAO BLE GND
  *   AM312 OUT -> XIAO BLE D0
+ *   スイッチA -> D1 と GND の間（モード1・緑）
+ *   スイッチB -> D2 と GND の間（モード2・青）
+ *   緑LED     -> D3 -> 抵抗 -> LEDのアノード(+)、カソード(-) -> GND
+ *   青LED     -> D4 -> 抵抗 -> LEDのアノード(+)、カソード(-) -> GND
  */
+
+#include <dt-bindings/gpio/nordic-nrf-gpio.h>
 
 / {
     chosen {
@@ -20,13 +26,42 @@
         wakeup-source;
 
         /*
-         * GPIO_ACTIVE_HIGH: 電圧がHIGHのときを「押された」と判定する
-         * 内蔵プルダウン（GPIO_PULL_DOWN）はあえて付けない。
-         * AM312の出力に約20kΩの抵抗があるという情報が正しければ、
-         * 内蔵抵抗（約13kΩ）と分圧されてHIGHが約1.3Vまで下がり、読めなくなるため。
+         * キー番号 0: センサー（D0）
+         *   GPIO_ACTIVE_HIGH: 電圧がHIGHのときを「押された」と判定する
+         *   内蔵プルダウン（GPIO_PULL_DOWN）はあえて付けない。
+         *   AM312の出力に約20kΩの抵抗があるという情報が正しければ、
+         *   内蔵抵抗（約13kΩ）と分圧されてHIGHが約1.3Vまで下がり、読めなくなるため。
+         *
+         * キー番号 1, 2: スイッチA（D1）, スイッチB（D2）
+         *   内蔵プルアップを使い、押すと GND につながって LOW になる（= 押された）
          */
-        input-gpios = <&xiao_d 0 GPIO_ACTIVE_HIGH>;
+        input-gpios
+            = <&xiao_d 0 GPIO_ACTIVE_HIGH>
+            , <&xiao_d 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&xiao_d 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            ;
     };
+
+    /*
+     * 外付けLED。明るくするため高出力モード（H0H1）で駆動する。
+     * 高出力モードの指定は xiao_d 経由だと落ちるので、gpio0 を直接指定する（D3 = P0.29, D4 = P0.04）。
+     */
+    pir_leds {
+        compatible = "gpio-leds";
+
+        pir_led_green: pir_led_green {
+            gpios = <&gpio0 29 (GPIO_ACTIVE_HIGH | NRF_GPIO_DRIVE_H0H1)>;
+        };
+
+        pir_led_blue: pir_led_blue {
+            gpios = <&gpio0 4 (GPIO_ACTIVE_HIGH | NRF_GPIO_DRIVE_H0H1)>;
+        };
+    };
+};
+
+/* D4 は標準では I2C に割り当てられているので、LED に使うため I2C を止める */
+&xiao_i2c {
+    status = "disabled";
 };
 
 /*

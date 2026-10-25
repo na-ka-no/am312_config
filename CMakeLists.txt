@@ -1,1 +1,4 @@
-target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_PIR_CONFIG_MACRO app PRIVATE src/behavior_pir_config_macro.c)
+if(CONFIG_ZMK_BEHAVIOR_PIR_SWITCH)
+  target_include_directories(app PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  target_sources(app PRIVATE src/behavior_pir_switch.c)
+endif()

@@ -15,6 +15,8 @@
     --accent-text: #ffffff;
     --danger: #c0392b;
     --chip: #eef2f8;
+    --mode1: #16a34a;
+    --mode2: #2563eb;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -27,6 +29,8 @@
       --accent-text: #0d1117;
       --danger: #ff7b6b;
       --chip: #262c35;
+      --mode1: #4ade80;
+      --mode2: #6b9bff;
     }
   }
   * { box-sizing: border-box; }
@@ -61,6 +65,27 @@
   button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
   button.danger { color: var(--danger); }
   button:disabled { opacity: .4; cursor: default; }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tabs button {
+    flex: 1;
+    padding: 10px;
+    font-weight: 600;
+    border-width: 2px;
+  }
+  .tabs button .dot {
+    display: inline-block; width: .7em; height: .7em; border-radius: 50%;
+    margin-right: .4em; vertical-align: .05em;
+  }
+  .tabs button[data-mode="0"] .dot { background: var(--mode1); }
+  .tabs button[data-mode="1"] .dot { background: var(--mode2); }
+  .tabs button[data-mode="0"][aria-selected="true"] { border-color: var(--mode1); }
+  .tabs button[data-mode="1"][aria-selected="true"] { border-color: var(--mode2); }
+  .tabs button[aria-selected="false"] { color: var(--muted); }
+
+  .editor { border-left: 4px solid var(--mode-color, var(--mode1)); padding-left: 12px; }
+  .editor h3 { font-size: 1rem; margin: 16px 0 8px; }
+  .editor h3:first-child { margin-top: 0; }
   .presets { display: flex; flex-wrap: wrap; gap: 8px; }
   .step {
     display: flex;
@@ -86,12 +111,16 @@
     background: var(--chip);
     border-radius: 8px;
     padding: 10px 12px;
-    font-weight: 600;
+    margin-bottom: 8px;
     word-break: break-word;
   }
+  .preview b { display: block; font-size: .85rem; color: var(--muted); }
   .error { color: var(--danger); margin: 8px 0 0; }
   .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
   ol.howto { margin: 0; padding-left: 1.4em; }
+  table.ops { width: 100%; border-collapse: collapse; }
+  table.ops th, table.ops td { text-align: left; padding: 6px 8px; border-top: 1px solid var(--border); vertical-align: top; }
+  table.ops th { white-space: nowrap; font-weight: 600; }
   details { margin-top: 12px; color: var(--muted); }
   pre { overflow-x: auto; font-size: .8rem; margin: 8px 0 0; }
 </style>
@@ -99,33 +128,36 @@
 <body>
 <main>
   <h1>PIR Switch 設定</h1>
-  <p class="lead">人感センサーが反応したときに送るキー操作を決めて、設定ファイル（.uf2）を作ります。</p>
+  <p class="lead">人感センサーが反応したときに送るキー操作を、モードごとに決めて設定ファイル（.uf2）を作ります。</p>
 
   <section>
-    <h2>テンプレートから選ぶ</h2>
-    <div class="presets" id="presets"></div>
-  </section>
-
-  <section>
-    <h2>送るキーの手順</h2>
-    <div id="steps"></div>
-    <div class="actions">
-      <button id="add-key">＋ キーを追加</button>
-      <button id="add-wait">＋ 待ち時間を追加</button>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-mode="0"><span class="dot"></span>モード1（緑）</button>
+      <button role="tab" data-mode="1"><span class="dot"></span>モード2（青）</button>
     </div>
-  </section>
 
-  <section>
-    <h2>タイミング</h2>
-    <div class="row">
-      <label>キーを押す長さ <input type="number" id="tap-ms" min="1" max="1000"> ms</label>
-      <label>キーとキーの間 <input type="number" id="wait-ms" min="1" max="1000"> ms</label>
+    <div class="editor" id="editor">
+      <h3>テンプレートから選ぶ</h3>
+      <div class="presets" id="presets"></div>
+
+      <h3>送るキーの手順</h3>
+      <div id="steps"></div>
+      <div class="actions">
+        <button id="add-key">＋ キーを追加</button>
+        <button id="add-wait">＋ 待ち時間を追加</button>
+      </div>
+
+      <h3>タイミング</h3>
+      <div class="row">
+        <label>キーを押す長さ <input type="number" id="tap-ms" min="1" max="1000"> ms</label>
+        <label>キーとキーの間 <input type="number" id="wait-ms" min="1" max="1000"> ms</label>
+      </div>
     </div>
   </section>
 
   <section>
     <h2>確認して保存</h2>
-    <div class="preview" id="preview"></div>
+    <div id="previews"></div>
     <p class="error" id="error" hidden></p>
     <div class="actions">
       <button class="primary" id="download">設定ファイルをダウンロード</button>
@@ -146,16 +178,35 @@
       <li>ドライブが消えたら完了（自動で再起動します）</li>
     </ol>
   </section>
+
+  <section>
+    <h2>本体の操作</h2>
+    <table class="ops">
+      <tr><th>スイッチA 単押し</th><td>動作確認（今のモードのキーを送り、モードの色で点滅）</td></tr>
+      <tr><th>スイッチA 3秒長押し</th><td>モード1（緑）にする</td></tr>
+      <tr><th>スイッチB 単押し</th><td>動作確認</td></tr>
+      <tr><th>スイッチB 3秒長押し</th><td>モード2（青）にする</td></tr>
+      <tr><th>両方 単押し</th><td>センサー反応時のLED表示を ON / OFF（ON：2回点滅、OFF：1回長く点灯）</td></tr>
+      <tr><th>両方 3秒長押し</th><td>Bluetooth のペアリング情報を消す（緑と青が5回点滅）。パソコン側でも「PIR Switch」を削除してから、ペアリングし直してください</td></tr>
+    </table>
+  </section>
 </main>
 
 <script>
-  // ファームウェア側（src/behavior_pir_config_macro.c, pir_switch.overlay）と合わせる値
+  // ファームウェア側（src/behavior_pir_switch.c, pir_switch.overlay）と合わせる値
   const CONFIG_ADDR = 0x000E9000;
   const UF2_FAMILY_NRF52840 = 0xADA52840;
   const MAGIC = 0x43524950; // "PIRC"
-  const VERSION = 1;
+  const VERSION = 2;
+  const MODE_COUNT = 2;
   const MAX_STEPS = 16;
-  const CONFIG_SIZE = 80;
+  const SEQ_OFFSET = 8;
+  const SEQ_SIZE = 72;
+  const CRC_OFFSET = SEQ_OFFSET + SEQ_SIZE * MODE_COUNT; // 152
+  const CONFIG_SIZE = CRC_OFFSET + 4;                    // 156
+
+  const MODE_NAMES = ["モード1（緑）", "モード2（青）"];
+  const MODE_COLORS = ["var(--mode1)", "var(--mode2)"];
 
   const PAGE_KEYBOARD = 0x07;
   const PAGE_CONSUMER = 0x0C;
@@ -212,7 +263,10 @@
     { name: "画面をロック（Win+L）", steps: [key("L", "win")] },
   ];
 
-  const state = { steps: [], tapMs: 30, waitMs: 30 };
+  // ファームウェアの mode1-default-keys / mode2-default-keys と同じ内容
+  const defaultMode = presetIndex => ({ steps: structuredClone(PRESETS[presetIndex].steps), tapMs: 30, waitMs: 30 });
+  const state = { modes: [defaultMode(0), defaultMode(1)], current: 0 };
+  const cur = () => state.modes[state.current];
 
   // ---------- 表示 ----------
 
@@ -224,10 +278,20 @@
     ).join("");
   }
 
+  function renderTabs() {
+    document.querySelectorAll(".tabs button").forEach(b => {
+      b.setAttribute("aria-selected", String(Number(b.dataset.mode) === state.current));
+    });
+    document.getElementById("editor").style.setProperty("--mode-color", MODE_COLORS[state.current]);
+    document.getElementById("tap-ms").value = cur().tapMs;
+    document.getElementById("wait-ms").value = cur().waitMs;
+  }
+
   function renderSteps() {
+    const steps = cur().steps;
     const el = document.getElementById("steps");
     el.innerHTML = "";
-    state.steps.forEach((s, i) => {
+    steps.forEach((s, i) => {
       const row = document.createElement("div");
       row.className = "step";
       let body;
@@ -243,7 +307,7 @@
         `<span class="num">${i + 1}</span>${body}` +
         `<span class="tools">` +
         `<button data-act="up" title="上へ"${i === 0 ? " disabled" : ""}>↑</button>` +
-        `<button data-act="down" title="下へ"${i === state.steps.length - 1 ? " disabled" : ""}>↓</button>` +
+        `<button data-act="down" title="下へ"${i === steps.length - 1 ? " disabled" : ""}>↓</button>` +
         `<button data-act="del" class="danger" title="削除">✕</button>` +
         `</span>`;
 
@@ -255,14 +319,15 @@
       row.querySelector("[data-ms]")?.addEventListener("input", e => { s.ms = Number(e.target.value); update(); });
       row.querySelector("[data-act=up]").addEventListener("click", () => move(i, -1));
       row.querySelector("[data-act=down]").addEventListener("click", () => move(i, 1));
-      row.querySelector("[data-act=del]").addEventListener("click", () => { state.steps.splice(i, 1); render(); });
+      row.querySelector("[data-act=del]").addEventListener("click", () => { steps.splice(i, 1); render(); });
       el.appendChild(row);
     });
   }
 
   function move(i, d) {
-    const [s] = state.steps.splice(i, 1);
-    state.steps.splice(i + d, 0, s);
+    const steps = cur().steps;
+    const [s] = steps.splice(i, 1);
+    steps.splice(i + d, 0, s);
     render();
   }
 
@@ -272,17 +337,25 @@
     return [...mods, KEYS[s.code].label].join(" + ");
   }
 
-  function validate() {
-    if (!state.steps.some(s => s.type === "key")) return "キーを1つ以上追加してください。";
-    if (state.steps.length > MAX_STEPS) return `手順は${MAX_STEPS}個までです。`;
-    if (state.steps[0].type === "wait") return "最初の手順にはキーを置いてください（待ち時間はキーの後に入ります）。";
-    for (const s of state.steps) {
+  function validateMode(m) {
+    if (!m.steps.some(s => s.type === "key")) return "キーを1つ以上追加してください。";
+    if (m.steps.length > MAX_STEPS) return `手順は${MAX_STEPS}個までです。`;
+    if (m.steps[0].type === "wait") return "最初の手順にはキーを置いてください（待ち時間はキーの後に入ります）。";
+    for (const s of m.steps) {
       if (s.type === "wait" && !(Number.isInteger(s.ms) && s.ms >= 1 && s.ms <= 65535)) {
         return "待ち時間は 1〜65535 ms の整数で入力してください。";
       }
     }
-    for (const v of [state.tapMs, state.waitMs]) {
+    for (const v of [m.tapMs, m.waitMs]) {
       if (!(Number.isInteger(v) && v >= 1 && v <= 1000)) return "タイミングは 1〜1000 ms の整数で入力してください。";
+    }
+    return null;
+  }
+
+  function validate() {
+    for (let i = 0; i < MODE_COUNT; i++) {
+      const err = validateMode(state.modes[i]);
+      if (err) return `${MODE_NAMES[i]}：${err}`;
     }
     return null;
   }
@@ -293,15 +366,28 @@
     errEl.hidden = !err;
     errEl.textContent = err || "";
     document.getElementById("download").disabled = !!err;
-    document.getElementById("add-key").disabled = state.steps.length >= MAX_STEPS;
-    document.getElementById("add-wait").disabled = state.steps.length >= MAX_STEPS;
-    document.getElementById("preview").textContent =
-      state.steps.length ? state.steps.map(describe).join("  →  ") : "（手順がありません）";
+    const full = cur().steps.length >= MAX_STEPS;
+    document.getElementById("add-key").disabled = full;
+    document.getElementById("add-wait").disabled = full;
+
+    const previews = document.getElementById("previews");
+    previews.innerHTML = "";
+    state.modes.forEach((m, i) => {
+      const div = document.createElement("div");
+      div.className = "preview";
+      div.style.borderLeft = `4px solid ${MODE_COLORS[i]}`;
+      const title = document.createElement("b");
+      title.textContent = MODE_NAMES[i];
+      div.append(title, m.steps.length ? m.steps.map(describe).join("  →  ") : "（手順がありません）");
+      previews.appendChild(div);
+    });
+
     document.getElementById("hex").textContent = err ? "" : hexDump(buildConfig());
-    try { localStorage.setItem("pir_config", JSON.stringify(state)); } catch (e) {}
+    try { localStorage.setItem("pir_config_v2", JSON.stringify(state)); } catch (e) {}
   }
 
   function render() {
+    renderTabs();
     renderSteps();
     update();
   }
@@ -320,12 +406,18 @@
     const dv = new DataView(buf.buffer);
     dv.setUint32(0, MAGIC, true);
     dv.setUint8(4, VERSION);
-    dv.setUint8(5, state.steps.length);
-    dv.setUint16(6, state.tapMs, true);
-    dv.setUint16(8, state.waitMs, true);
-    dv.setUint16(10, 0, true);
-    state.steps.forEach((s, i) => dv.setUint32(12 + i * 4, stepValue(s), true));
-    dv.setUint32(76, crc32(buf.subarray(0, 76)), true);
+    dv.setUint8(5, MODE_COUNT);
+    dv.setUint16(6, 0, true);
+    state.modes.forEach((m, i) => {
+      const base = SEQ_OFFSET + SEQ_SIZE * i;
+      dv.setUint8(base, m.steps.length);
+      dv.setUint8(base + 1, 0);
+      dv.setUint16(base + 2, m.tapMs, true);
+      dv.setUint16(base + 4, m.waitMs, true);
+      dv.setUint16(base + 6, 0, true);
+      m.steps.forEach((s, j) => dv.setUint32(base + 8 + j * 4, stepValue(s), true));
+    });
+    dv.setUint32(CRC_OFFSET, crc32(buf.subarray(0, CRC_OFFSET)), true);
     return buf;
   }
 
@@ -376,23 +468,26 @@
 
   // ---------- 初期化 ----------
 
+  document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
+    state.current = Number(b.dataset.mode);
+    render();
+  }));
+
   const presetsEl = document.getElementById("presets");
   PRESETS.forEach(p => {
     const b = document.createElement("button");
     b.textContent = p.name;
     b.addEventListener("click", () => {
-      state.steps = structuredClone(p.steps);
+      cur().steps = structuredClone(p.steps);
       render();
     });
     presetsEl.appendChild(b);
   });
 
-  document.getElementById("add-key").addEventListener("click", () => { state.steps.push(key("C_PP")); render(); });
-  document.getElementById("add-wait").addEventListener("click", () => { state.steps.push(wait(500)); render(); });
-  const tapEl = document.getElementById("tap-ms");
-  const waitEl = document.getElementById("wait-ms");
-  tapEl.addEventListener("input", () => { state.tapMs = Number(tapEl.value); update(); });
-  waitEl.addEventListener("input", () => { state.waitMs = Number(waitEl.value); update(); });
+  document.getElementById("add-key").addEventListener("click", () => { cur().steps.push(key("C_PP")); render(); });
+  document.getElementById("add-wait").addEventListener("click", () => { cur().steps.push(wait(500)); render(); });
+  document.getElementById("tap-ms").addEventListener("input", e => { cur().tapMs = Number(e.target.value); update(); });
+  document.getElementById("wait-ms").addEventListener("input", e => { cur().waitMs = Number(e.target.value); update(); });
 
   document.getElementById("download").addEventListener("click", () => {
     if (!validate()) download(buildUf2(buildConfig()), "pir_config.uf2");
@@ -402,16 +497,17 @@
   });
 
   try {
-    const saved = JSON.parse(localStorage.getItem("pir_config"));
-    if (saved && Array.isArray(saved.steps)) {
-      state.steps = saved.steps.filter(s => s.type === "wait" || KEYS[s.code]);
-      if (Number.isInteger(saved.tapMs)) state.tapMs = saved.tapMs;
-      if (Number.isInteger(saved.waitMs)) state.waitMs = saved.waitMs;
+    const saved = JSON.parse(localStorage.getItem("pir_config_v2"));
+    if (saved && Array.isArray(saved.modes) && saved.modes.length === MODE_COUNT) {
+      saved.modes.forEach((m, i) => {
+        if (!Array.isArray(m.steps)) return;
+        state.modes[i].steps = m.steps.filter(s => s.type === "wait" || KEYS[s.code]);
+        if (Number.isInteger(m.tapMs)) state.modes[i].tapMs = m.tapMs;
+        if (Number.isInteger(m.waitMs)) state.modes[i].waitMs = m.waitMs;
+      });
+      if (saved.current === 0 || saved.current === 1) state.current = saved.current;
     }
   } catch (e) {}
-  if (!state.steps.length) state.steps = structuredClone(PRESETS[0].steps);
-  tapEl.value = state.tapMs;
-  waitEl.value = state.waitMs;
   render();
 </script>
 </body>

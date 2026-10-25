@@ -1,7 +1,7 @@
-config ZMK_BEHAVIOR_PIR_CONFIG_MACRO
+config ZMK_BEHAVIOR_PIR_SWITCH
     bool
     default y
-    depends on DT_HAS_ZMK_BEHAVIOR_PIR_CONFIG_MACRO_ENABLED
+    depends on DT_HAS_ZMK_BEHAVIOR_PIR_SWITCH_ENABLED
     select FLASH
     select FLASH_MAP
     select CRC
