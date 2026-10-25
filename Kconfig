@@ -5,7 +5,6 @@ config ZMK_BEHAVIOR_PIR_SWITCH
     select FLASH
     select FLASH_MAP
     select CRC
-    select LED_STRIP
 
 config ZMK_BATTERY_NIMH_VOLTAGE_DIVIDER
     bool

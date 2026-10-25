@@ -7,13 +7,11 @@
  *   AM312 OUT -> XIAO BLE D0
  *   スイッチA -> D1 と GND の間（モード1・緑）
  *   スイッチB -> D2 と GND の間（モード2・青）
- *   LED1（スイッチAの下、SK6812MINI-E）: VDD -> 3V3, GND -> GND, DIN -> D5
- *   LED2（スイッチBの下、SK6812MINI-E）: VDD -> 3V3, GND -> GND, DIN -> LED1 の DOUT
  *   昇圧モジュール（aaa-boost-module-v2）:
  *     GND -> GND, 5V -> 5V, SNS -> D3, MCU -> BAT+（XIAO 裏面）, BAT -> 電源スイッチ -> 電池+
+ *
+ * LED は XIAO 基板上のフルカラーLEDの緑（led1 = P0.30）と青（led2 = P0.06）を使う（配線不要）。
  */
-
-#include <dt-bindings/led/led.h>
 
 / {
     chosen {
@@ -61,47 +59,6 @@
 
 &vbatt {
     status = "disabled";
-};
-
-/* D5 は標準では I2C に割り当てられているので、LED に使うため I2C を止める */
-&xiao_i2c {
-    status = "disabled";
-};
-
-/*
- * スイッチの下のフルカラーLED（SK6812MINI-E × 2、数珠つなぎ）
- * SPI の MOSI 信号で WS2812 互換の信号を作る方式（ZMK の公式ドキュメントと同じ）。
- * 使うのは MOSI（D5 = P0.05）だけ。XIAO の標準定義の SCK/MISO は割り当てない。
- */
-&spi3_default {
-    group1 {
-        psels = <NRF_PSEL(SPIM_MOSI, 0, 5)>;
-    };
-};
-
-&spi3_sleep {
-    group1 {
-        psels = <NRF_PSEL(SPIM_MOSI, 0, 5)>;
-        low-power-enable;
-    };
-};
-
-&spi3 {
-    compatible = "nordic,nrf-spim";
-    status = "okay";
-    pinctrl-0 = <&spi3_default>;
-    pinctrl-1 = <&spi3_sleep>;
-    pinctrl-names = "default", "sleep";
-
-    pir_led_strip: ws2812@0 {
-        compatible = "worldsemi,ws2812-spi";
-        reg = <0>; /* SPI の決まりで必要（実際には使わない） */
-        spi-max-frequency = <4000000>;
-        chain-length = <2>; /* 0 = スイッチAの下, 1 = スイッチBの下 */
-        spi-one-frame = <0x70>;
-        spi-zero-frame = <0x40>;
-        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
-    };
 };
 
 /*
