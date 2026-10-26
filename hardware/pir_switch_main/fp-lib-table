@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "pir_switch") (type "KiCad") (uri "${KIPRJMOD}/pir_switch.pretty") (options "") (descr ""))
+)

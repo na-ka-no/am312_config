@@ -1,0 +1,8 @@
+"Reference","Value","Footprint","Qty"
+"BT1","Eneloop AAA (1.2V)","Battery:BatteryHolder_Keystone_2466_1xAAA","1"
+"J1","AM312 (VCC, OUT, GND)","Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical","1"
+"J2","aaa-boost-module-v2","pir_switch:Header_1x05_P2.54mm_Compact","1"
+"J3","Power switch","Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical","1"
+"SW1","Choc SW_A (mode 1)","pir_switch:Kailh_Choc_V1","1"
+"SW2","Choc SW_B (mode 2)","pir_switch:Kailh_Choc_V1","1"
+"U1","XIAO nRF52840","pir_switch:XIAO_nRF52840_THT_VBAT","1"
