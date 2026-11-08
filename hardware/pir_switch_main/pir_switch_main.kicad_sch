@@ -1,0 +1,1170 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "0048348d-69ff-44dc-ab84-305bd287dff7")
+	(paper "A4")
+	(title_block (title "PIR Switch main board") (date "2026-10-26") (rev "1"))
+	(lib_symbols
+	(symbol "Device:Battery_Cell"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "BT"
+			(at 2.54 2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Battery_Cell"
+			(at 2.54 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 1.524 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 1.524 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Single-cell battery"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "battery cell"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "Battery_Cell_0_1"
+			(rectangle
+				(start -2.286 1.778)
+				(end 2.286 1.524)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type outline)
+				)
+			)
+			(rectangle
+				(start -1.524 1.016)
+				(end 1.524 0.508)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type outline)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 1.778) (xy 0 2.54)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 0.762) (xy 0 0)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0.762 3.048) (xy 1.778 3.048)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 1.27 3.556) (xy 1.27 2.54)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "Battery_Cell_1_1"
+			(pin passive line
+				(at 0 5.08 270)
+				(length 2.54)
+				(name "+"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -2.54 90)
+				(length 2.54)
+				(name "-"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+	(symbol "Switch:SW_Push"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 1.016)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "SW"
+			(at 1.27 2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SW_Push"
+			(at 0 -1.524 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 5.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 5.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Push button switch, generic, two pins"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "switch normally-open pushbutton push-button"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "SW_Push_0_1"
+			(circle
+				(center -2.032 0)
+				(radius 0.508)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 1.27) (xy 0 3.048)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(circle
+				(center 2.032 0)
+				(radius 0.508)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.54 1.27) (xy -2.54 1.27)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(pin passive line
+				(at -5.08 0 0)
+				(length 2.54)
+				(name "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 5.08 0 180)
+				(length 2.54)
+				(name "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+	(symbol "Connector_Generic:Conn_01x02"
+		(pin_names
+			(offset 1.016)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "J"
+			(at 0 2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x02"
+			(at 0 -5.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "connector"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "Connector*:*_1x??_*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "Conn_01x02_1_1"
+			(rectangle
+				(start -1.27 1.27)
+				(end 1.27 -3.81)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(rectangle
+				(start -1.27 0.127)
+				(end 0 -0.127)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 -2.413)
+				(end 0 -2.667)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(pin passive line
+				(at -5.08 0 0)
+				(length 3.81)
+				(name "Pin_1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 -2.54 0)
+				(length 3.81)
+				(name "Pin_2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+	(symbol "Connector_Generic:Conn_01x03"
+		(pin_names
+			(offset 1.016)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "J"
+			(at 0 5.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x03"
+			(at 0 -5.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "connector"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "Connector*:*_1x??_*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "Conn_01x03_1_1"
+			(rectangle
+				(start -1.27 3.81)
+				(end 1.27 -3.81)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(rectangle
+				(start -1.27 2.667)
+				(end 0 2.413)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 0.127)
+				(end 0 -0.127)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 -2.413)
+				(end 0 -2.667)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(pin passive line
+				(at -5.08 2.54 0)
+				(length 3.81)
+				(name "Pin_1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 0 0)
+				(length 3.81)
+				(name "Pin_2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 -2.54 0)
+				(length 3.81)
+				(name "Pin_3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+	(symbol "Connector_Generic:Conn_01x05"
+		(pin_names
+			(offset 1.016)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "J"
+			(at 0 7.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x05"
+			(at 0 -7.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "connector"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "Connector*:*_1x??_*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "Conn_01x05_1_1"
+			(rectangle
+				(start -1.27 6.35)
+				(end 1.27 -6.35)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(rectangle
+				(start -1.27 5.207)
+				(end 0 4.953)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 2.667)
+				(end 0 2.413)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 0.127)
+				(end 0 -0.127)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 -2.413)
+				(end 0 -2.667)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 -4.953)
+				(end 0 -5.207)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(pin passive line
+				(at -5.08 5.08 0)
+				(length 3.81)
+				(name "Pin_1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 2.54 0)
+				(length 3.81)
+				(name "Pin_2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 0 0)
+				(length 3.81)
+				(name "Pin_3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 -2.54 0)
+				(length 3.81)
+				(name "Pin_4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 -5.08 0)
+				(length 3.81)
+				(name "Pin_5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+	(symbol "Mechanical:MountingHole"
+		(pin_names
+			(offset 1.016)
+		)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(property "Reference" "H"
+			(at 0 5.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "MountingHole"
+			(at 0 3.175 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole without connection"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "mounting hole"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "MountingHole*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "MountingHole_0_1"
+			(circle
+				(center 0 0)
+				(radius 1.27)
+				(stroke
+					(width 1.27)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+	(symbol "pir_switch:XIAO_nRF52840"
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "U" (at 0 13.97 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "XIAO_nRF52840" (at 0 -13.97 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "pir_switch:XIAO_nRF52840_THT_VBAT" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "https://wiki.seeedstudio.com/XIAO_BLE/" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "Seeed XIAO nRF52840 (pin 15 = VBAT pad on the back)" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(symbol "XIAO_nRF52840_0_1"
+			(rectangle (start -7.62 11.43) (end 7.62 -11.43) (stroke (width 0.254) (type default)) (fill (type background)))
+		)
+		(symbol "XIAO_nRF52840_1_1"
+			(pin passive line (at -10.16 10.16 0) (length 2.54)
+				(name "D0" (effects (font (size 1.27 1.27))))
+				(number "1" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at -10.16 7.62 0) (length 2.54)
+				(name "D1" (effects (font (size 1.27 1.27))))
+				(number "2" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at -10.16 5.08 0) (length 2.54)
+				(name "D2" (effects (font (size 1.27 1.27))))
+				(number "3" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at -10.16 2.54 0) (length 2.54)
+				(name "D3" (effects (font (size 1.27 1.27))))
+				(number "4" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at -10.16 0.0 0) (length 2.54)
+				(name "D4" (effects (font (size 1.27 1.27))))
+				(number "5" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at -10.16 -2.539999999999999 0) (length 2.54)
+				(name "D5" (effects (font (size 1.27 1.27))))
+				(number "6" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at -10.16 -5.08 0) (length 2.54)
+				(name "D6" (effects (font (size 1.27 1.27))))
+				(number "7" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at -10.16 -10.16 0) (length 2.54)
+				(name "VBAT" (effects (font (size 1.27 1.27))))
+				(number "15" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at 10.16 10.16 180) (length 2.54)
+				(name "5V" (effects (font (size 1.27 1.27))))
+				(number "14" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at 10.16 7.62 180) (length 2.54)
+				(name "GND" (effects (font (size 1.27 1.27))))
+				(number "13" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at 10.16 5.08 180) (length 2.54)
+				(name "3V3" (effects (font (size 1.27 1.27))))
+				(number "12" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at 10.16 2.54 180) (length 2.54)
+				(name "D10" (effects (font (size 1.27 1.27))))
+				(number "11" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at 10.16 0.0 180) (length 2.54)
+				(name "D9" (effects (font (size 1.27 1.27))))
+				(number "10" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at 10.16 -2.539999999999999 180) (length 2.54)
+				(name "D8" (effects (font (size 1.27 1.27))))
+				(number "9" (effects (font (size 1.27 1.27)))))
+			(pin passive line (at 10.16 -5.08 180) (length 2.54)
+				(name "D7" (effects (font (size 1.27 1.27))))
+				(number "8" (effects (font (size 1.27 1.27)))))
+		)
+	)
+	)
+	(symbol (lib_id "pir_switch:XIAO_nRF52840") (at 127 88.9 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "432d5f03-ba80-4b09-852e-571b743aa0d9")
+		(property "Reference" "U1" (at 127.00 74.93 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "XIAO nRF52840" (at 127.00 102.87 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "pir_switch:XIAO_nRF52840_THT_VBAT" (at 127.00 88.90 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 127.00 88.90 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 127.00 88.90 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "cdd6b472-5194-4d43-86b0-d550cfa278e7"))
+		(pin "2" (uuid "9b4955c2-4705-4389-8847-135738d12ff3"))
+		(pin "3" (uuid "2b919f68-d132-42b4-9f8b-0056843a7daf"))
+		(pin "4" (uuid "947bb182-b10f-4684-bd55-7d5f23199ddd"))
+		(pin "5" (uuid "6e0fa774-2b50-40f7-95c8-abd676387660"))
+		(pin "6" (uuid "7fb5531c-f6bd-477c-bad3-d9c5f5fd71bf"))
+		(pin "7" (uuid "a8cc0ec9-b390-40c2-b9c3-c5a5e5648628"))
+		(pin "15" (uuid "ba335b47-dd54-44e3-a8f8-746c13392dd5"))
+		(pin "14" (uuid "41c64fc1-1101-4ec2-851c-59cd8f4390ff"))
+		(pin "13" (uuid "eb811848-1a63-445d-91b0-e3fe72417fdc"))
+		(pin "12" (uuid "66844023-7651-4ddc-ac21-529cd3a24a8a"))
+		(pin "11" (uuid "6c6f3e2b-12c1-43de-ad2f-a7a450f39b75"))
+		(pin "10" (uuid "eb4c60f2-096b-449e-91c1-6730ec056e68"))
+		(pin "9" (uuid "0afda131-b7ba-4db8-a4d9-b2588a650790"))
+		(pin "8" (uuid "6e3159d8-64a9-4839-9488-3dceae0914f9"))
+		(instances (project "pir_switch_main" (path "/0048348d-69ff-44dc-ab84-305bd287dff7" (reference "U1") (unit 1))))
+	)
+	(symbol (lib_id "Switch:SW_Push") (at 76.2 63.5 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "a1266122-bf2b-46ba-9ccf-9514507eb7f5")
+		(property "Reference" "SW1" (at 76.20 59.69 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "Choc SW_A (mode 1)" (at 76.20 67.31 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "pir_switch:Kailh_Choc_V1" (at 76.20 63.50 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 76.20 63.50 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 76.20 63.50 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "1a1391ee-bf03-4f13-bee6-e7d43b5271b7"))
+		(pin "2" (uuid "1f302612-aeae-40d8-911c-61c2fe0f88d0"))
+		(instances (project "pir_switch_main" (path "/0048348d-69ff-44dc-ab84-305bd287dff7" (reference "SW1") (unit 1))))
+	)
+	(symbol (lib_id "Switch:SW_Push") (at 76.2 81.28 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "4e71e462-b078-4a42-89d7-ad681ec671fb")
+		(property "Reference" "SW2" (at 76.20 77.47 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "Choc SW_B (mode 2)" (at 76.20 85.09 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "pir_switch:Kailh_Choc_V1" (at 76.20 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 76.20 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 76.20 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "daa52419-f06e-480b-8768-f441f506d411"))
+		(pin "2" (uuid "2cad1ca6-abd0-43b3-8b1f-32c20da0458f"))
+		(instances (project "pir_switch_main" (path "/0048348d-69ff-44dc-ab84-305bd287dff7" (reference "SW2") (unit 1))))
+	)
+	(symbol (lib_id "Connector_Generic:Conn_01x03") (at 190.5 63.5 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "201437c1-77ca-486a-977d-c2074807edc6")
+		(property "Reference" "J1" (at 190.50 54.61 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "AM312 (VCC, OUT, GND)" (at 190.50 72.39 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" (at 190.50 63.50 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 190.50 63.50 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 190.50 63.50 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "553f23b1-bfdd-48ec-88e7-aa7f77b32eee"))
+		(pin "2" (uuid "24529437-7ccb-4984-9f50-7b89c4fcb700"))
+		(pin "3" (uuid "4701c248-46e1-4deb-959d-12154c5d56e5"))
+		(instances (project "pir_switch_main" (path "/0048348d-69ff-44dc-ab84-305bd287dff7" (reference "J1") (unit 1))))
+	)
+	(symbol (lib_id "Connector_Generic:Conn_01x05") (at 190.5 101.6 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "a01765d9-bc5a-4ee4-91a3-f62871dd4d95")
+		(property "Reference" "J2" (at 190.50 92.71 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "aaa-boost-module-v2" (at 190.50 110.49 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "pir_switch:Header_1x05_P2.54mm_Compact" (at 190.50 101.60 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 190.50 101.60 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 190.50 101.60 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "9e88c191-d74f-4215-b4aa-7e11f96ec55f"))
+		(pin "2" (uuid "d9a172d3-bee4-4bd0-b9f9-6486d503dc40"))
+		(pin "3" (uuid "77eda61e-e610-4578-a03e-b44a071e94eb"))
+		(pin "4" (uuid "bd2a5a6d-9c01-40a5-a391-a50417fad4f4"))
+		(pin "5" (uuid "d14b99c8-80d1-4525-9d71-a2583103fbf7"))
+		(instances (project "pir_switch_main" (path "/0048348d-69ff-44dc-ab84-305bd287dff7" (reference "J2") (unit 1))))
+	)
+	(symbol (lib_id "Connector_Generic:Conn_01x02") (at 190.5 137.16 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "7798520a-33f6-4aa7-ac09-729d1a74fcdc")
+		(property "Reference" "J3" (at 190.50 128.27 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "Power switch" (at 190.50 146.05 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" (at 190.50 137.16 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 190.50 137.16 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 190.50 137.16 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "70c8b7e9-493c-4a4d-b57e-a81fdd486252"))
+		(pin "2" (uuid "bd5e59be-091a-4326-b48a-a3de5ca20257"))
+		(instances (project "pir_switch_main" (path "/0048348d-69ff-44dc-ab84-305bd287dff7" (reference "J3") (unit 1))))
+	)
+	(symbol (lib_id "Device:Battery_Cell") (at 139.7 139.7 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "e0fb6d6f-9f1d-4d30-b7dd-d054a2eee7d0")
+		(property "Reference" "BT1" (at 147.32 139.70 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "Eneloop AAA (1.2V)" (at 147.32 142.24 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "Battery:BatteryHolder_Keystone_2466_1xAAA" (at 139.70 139.70 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 139.70 139.70 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 139.70 139.70 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "ca8df57e-bc88-4f19-93ba-d8fd9791f6be"))
+		(pin "2" (uuid "3c742883-83b5-40cf-9f0a-cb5644b34c1c"))
+		(instances (project "pir_switch_main" (path "/0048348d-69ff-44dc-ab84-305bd287dff7" (reference "BT1") (unit 1))))
+	)
+	(symbol (lib_id "Mechanical:MountingHole") (at 63.5 160.02 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board yes) (dnp no) (uuid "7216e891-0510-41be-8533-33e859d4a23a")
+		(property "Reference" "H1" (at 63.50 151.13 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "M2" (at 63.50 168.91 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2" (at 63.50 160.02 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 63.50 160.02 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 63.50 160.02 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(instances (project "pir_switch_main" (path "/0048348d-69ff-44dc-ab84-305bd287dff7" (reference "H1") (unit 1))))
+	)
+	(symbol (lib_id "Mechanical:MountingHole") (at 76.2 160.02 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board yes) (dnp no) (uuid "a31d047b-b03d-4cee-8795-5626093185dc")
+		(property "Reference" "H2" (at 76.20 151.13 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "M2" (at 76.20 168.91 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2" (at 76.20 160.02 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 76.20 160.02 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 76.20 160.02 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(instances (project "pir_switch_main" (path "/0048348d-69ff-44dc-ab84-305bd287dff7" (reference "H2") (unit 1))))
+	)
+	(symbol (lib_id "Mechanical:MountingHole") (at 88.9 160.02 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board yes) (dnp no) (uuid "cd13adda-500e-43b6-9922-dfc99ac4cdc0")
+		(property "Reference" "H3" (at 88.90 151.13 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "M2" (at 88.90 168.91 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2" (at 88.90 160.02 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 88.90 160.02 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 88.90 160.02 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(instances (project "pir_switch_main" (path "/0048348d-69ff-44dc-ab84-305bd287dff7" (reference "H3") (unit 1))))
+	)
+	(label "D0_PIR" (at 116.84 78.74 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "f72090ac-36c3-4f98-a1d0-1d9a16c8810b"))
+	(label "D1_SW_A" (at 116.84 81.28 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "13ec04c9-ea2b-4eb5-9bc5-b689f3a436a9"))
+	(label "D2_SW_B" (at 116.84 83.82 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "c19a58b8-2c50-4eb2-9f73-cef40e0ba3ff"))
+	(label "BAT_SNS" (at 116.84 86.36 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "1829d059-0e11-49e6-bc3b-93ee64ac3af9"))
+	(label "VBAT" (at 116.84 99.06 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "da26c443-05a5-4053-b823-36bf7348943b"))
+	(label "VBUS" (at 137.16 78.74 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "1711c7f3-2fcc-4cd6-9a1b-676dcd07828e"))
+	(label "GND" (at 137.16 81.28 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "fd07d020-b906-41b3-b9aa-fcd7606d5439"))
+	(label "+3V3" (at 137.16 83.82 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "5fb8a658-3438-4d41-872f-2ca6e0df8f54"))
+	(label "GND" (at 71.12 63.5 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "f6640150-5c0f-47e5-8353-139d8fe2e6af"))
+	(label "D1_SW_A" (at 81.28 63.5 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "12d353bc-e55c-4803-9c4d-3654e3e6922b"))
+	(label "GND" (at 71.12 81.28 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "3024584b-6a5e-4b62-9092-f200c79c887e"))
+	(label "D2_SW_B" (at 81.28 81.28 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "379fd022-889e-4034-b1d6-87ff4b730319"))
+	(label "+3V3" (at 185.42 60.96 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "ec2ba539-2f9e-4a01-bf4a-2c057a770821"))
+	(label "D0_PIR" (at 185.42 63.5 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "4a49e8ac-ac5c-4b57-9f93-34cfaa900fee"))
+	(label "GND" (at 185.42 66.04 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "e7f0ea1c-78f3-4a08-ae5f-80ad47941ff5"))
+	(label "GND" (at 185.42 96.52 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "2b456bb4-4815-4d8c-bdc9-4e6e387d5568"))
+	(label "VBUS" (at 185.42 99.06 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "fd7ebfc9-05b1-48ca-9c19-9230a228ba61"))
+	(label "BAT_SNS" (at 185.42 101.6 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "84f347d8-c3fa-4a36-bd48-cf47fa42eb00"))
+	(label "VBAT" (at 185.42 104.14 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "e838c9f9-c07e-4133-a6d5-2db6345da56d"))
+	(label "BAT_SW" (at 185.42 106.68 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "898d63fc-7e2d-468e-9893-1ac8e1520f8d"))
+	(label "BAT_P" (at 185.42 137.16 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "eca4a67f-380d-417c-ae7d-9c9ac39280b5"))
+	(label "BAT_SW" (at 185.42 139.7 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "d61378f5-dce9-4b71-8880-f7af6e929624"))
+	(label "BAT_P" (at 139.7 134.62 90) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "30b032ee-3978-487b-b8bf-b838cba7255b"))
+	(label "GND" (at 139.7 142.24 270) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "03e8d9dd-10fc-4963-8d14-d546f6b9e2ff"))
+	(no_connect (at 116.84 88.9) (uuid "ad5b3de7-f6e8-4404-b73f-8d1e4624ffd9"))
+	(no_connect (at 116.84 91.44) (uuid "3966a29b-54cb-4171-9a86-198dc1d66690"))
+	(no_connect (at 116.84 93.98) (uuid "643d2768-f826-4382-9fe2-24237a162696"))
+	(no_connect (at 137.16 86.36) (uuid "f7cce99c-e4e7-4afc-8035-bc3938d4ecf4"))
+	(no_connect (at 137.16 88.9) (uuid "1ceec70e-360d-4240-ac0a-34c548d1e98a"))
+	(no_connect (at 137.16 91.44) (uuid "18525867-96b1-4393-b236-aa137dc2af24"))
+	(no_connect (at 137.16 93.98) (uuid "054ef058-afa0-4cf9-8ded-d18924a72464"))
+	(text "J1: AM312 は電線でつなぐ（VCC / OUT / GND の順番は AM312 側の表示で確認）" (exclude_from_sim no) (at 30.48 177.8 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "631d6527-33ad-42dd-9330-cd1d2b3d3d86"))
+	(text "J2: 昇圧モジュール aaa-boost-module-v2（1 GND, 2 5V, 3 SNS, 4 MCU, 5 BAT）" (exclude_from_sim no) (at 30.48 182.88000000000002 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "90b0b289-0ec0-4267-808e-616e0cbb3a43"))
+	(text "J3: 電源スイッチを電線でつなぐ（電池+ と 昇圧モジュール BAT の間を ON/OFF）" (exclude_from_sim no) (at 30.48 187.96 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "c5cc1c42-d485-4b0f-afec-dfa6c0a93323"))
+	(text "U1 pin 15: XIAO 裏面の VBAT パッドと電線でつなぐ" (exclude_from_sim no) (at 30.48 193.04000000000002 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "619c1e32-76e2-48cd-af71-1f008192e9d3"))
+	(sheet_instances (path "/" (page "1")))
+	(embedded_fonts no)
+)
